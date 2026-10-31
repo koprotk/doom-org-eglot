@@ -113,6 +113,17 @@ fallback for languages whose Babel support has not been loaded yet."
   :type '(alist :key-type string :value-type string)
   :group 'doom-org-eglot)
 
+(defun doom-org-eglot--mode-derived-p (mode key)
+  "Return non-nil if MODE is KEY or derives from it.
+Unlike `provided-mode-derived-p', this compares the symbols directly
+before walking `derived-mode-parent', so it also matches aliases and
+modes that have not been defined yet."
+  (or (eq mode key)
+      (let ((parent (get mode 'derived-mode-parent)))
+        (while (and parent (not (eq parent key)))
+          (setq parent (get parent 'derived-mode-parent)))
+        (eq parent key))))
+
 (defun doom-org-eglot--server-program (mode)
   "Return the Eglot contact configured for MODE, or nil.
 MODE is a major mode symbol.
@@ -123,13 +134,14 @@ or a mode followed by a property list (as in
 `(js-mode :language-id \"javascript\")')."
   (catch 'doom-org-eglot--found
     (dolist (entry eglot-server-programs)
-      (let ((modes (car entry)))
-        (when (if (or (symbolp modes) (keywordp (cadr modes)))
-                  (provided-mode-derived-p mode modes)
-                (seq-some (lambda (m)
-                            (provided-mode-derived-p
-                             mode (if (consp m) (car m) m)))
-                          modes))
+      (let* ((modes (car entry))
+             (keys (cond ((symbolp modes) (list modes))
+                         ((keywordp (cadr modes)) (list (car modes)))
+                         (t modes))))
+        (when (seq-some (lambda (key)
+                          (doom-org-eglot--mode-derived-p
+                           mode (if (consp key) (car key) key)))
+                        keys)
           (throw 'doom-org-eglot--found (cdr entry)))))
     nil))
 

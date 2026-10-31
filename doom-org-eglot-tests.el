@@ -33,11 +33,11 @@
 (ert-deftest doom-org-eglot-test-server-program-plain-and-derived-keys ()
   "Plain mode keys and derived modes both match."
   (let ((eglot-server-programs
-         '((sh-mode . ("bash-language-server" "start")))))
-    (should (equal (doom-org-eglot--server-program 'sh-mode)
-                   '("bash-language-server" "start")))
-    (should (equal (doom-org-eglot--server-program 'bash-ts-mode)
-                   '("bash-language-server" "start")))))
+         '((prog-mode . ("prog-server")))))
+    (should (equal (doom-org-eglot--server-program 'prog-mode)
+                   '("prog-server")))
+    (should (equal (doom-org-eglot--server-program 'emacs-lisp-mode)
+                   '("prog-server")))))
 
 (ert-deftest doom-org-eglot-test-tangle-file ()
   "Relative `:tangle' paths expand against the Org buffer's directory."
