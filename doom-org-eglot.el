@@ -3,8 +3,8 @@
 ;; Copyright (C) 2024 Anoncheg1
 ;; Copyright (C) 2026 Daniel Muñoz
 
-;; Author: Daniel Muñoz <daniel.munoz.m@usach.cl>
-;; Maintainer: Daniel Muñoz <daniel.munoz.m@usach.cl>
+;; Author: Daniel Muñoz <demunoz2@uc.cl>
+;; Maintainer: Daniel Muñoz <demunoz2@uc.cl>
 ;; URL: https://github.com/koprotk/doom-org-eglot
 ;; Version: 0.1.0
 ;; Package-Requires: ((emacs "29.1") (org "9.6"))
@@ -43,21 +43,23 @@
 ;; Blocks with a remote `:dir' (TRAMP) are tangled and edited on the
 ;; remote host, so Eglot starts the language server there too.
 ;;
-;; Enable `doom-org-eglot-mode' and keep using `C-c '' as usual:
+;; Installing the package is enough: its generated autoloads enable
+;; `doom-org-eglot-mode' at startup.  To turn it off, add this to
+;; your init file:
+;;
+;;   (doom-org-eglot-mode -1)
+;;
+;; With a manual install (no generated autoloads), load and enable it
+;; yourself:
 ;;
 ;;   (require 'doom-org-eglot)
 ;;   (doom-org-eglot-mode 1)
 ;;
-;; For Doom Emacs:
+;; For Doom Emacs, just declare it:
 ;;
 ;;   ;; packages.el
 ;;   (package! doom-org-eglot
 ;;     :recipe (:host github :repo "koprotk/doom-org-eglot"))
-;;
-;;   ;; config.el
-;;   (use-package! doom-org-eglot
-;;     :after org
-;;     :config (doom-org-eglot-mode 1))
 ;;
 ;; This is a fork of Anoncheg1/org-eglot, which packaged the snippet
 ;; from https://github.com/joaotavora/eglot/issues/216#issuecomment-1052931508
@@ -235,6 +237,10 @@ has a configured server."
   (if doom-org-eglot-mode
       (advice-add 'org-edit-special :around #'doom-org-eglot--edit-special)
     (advice-remove 'org-edit-special #'doom-org-eglot--edit-special)))
+
+;; Enabling the mode from the generated autoloads makes installation
+;; sufficient; users can still turn it off with `(doom-org-eglot-mode -1)'.
+;;;###autoload (doom-org-eglot-mode 1)
 
 (provide 'doom-org-eglot)
 ;;; doom-org-eglot.el ends here

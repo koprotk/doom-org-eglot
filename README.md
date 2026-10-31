@@ -34,22 +34,15 @@ so the language server runs there too.
 
 ### Doom Emacs
 
-`packages.el`:
+Declare the package in `packages.el`:
 
 ```elisp
 (package! doom-org-eglot
   :recipe (:host github :repo "koprotk/doom-org-eglot"))
 ```
 
-`config.el`:
-
-```elisp
-(use-package! doom-org-eglot
-  :after org
-  :config (doom-org-eglot-mode 1))
-```
-
-Then run `doom sync` and restart Emacs.
+Then run `doom sync` and restart Emacs. The package enables its mode from
+its autoloads, so no `config.el` entry is needed.
 
 ### `package-vc` (Emacs 29+)
 
@@ -66,9 +59,24 @@ Then run `doom sync` and restart Emacs.
 (doom-org-eglot-mode 1)
 ```
 
+## Configuration
+
+No configuration is required. The package's generated autoloads enable
+`doom-org-eglot-mode` at startup, so `package!` + `doom sync` (or
+`package-vc-install`) is enough.
+
+To turn the mode off, add this to `config.el` or your init file:
+
+```elisp
+(doom-org-eglot-mode -1)
+```
+
+A manual install has no generated autoloads, so keep the
+`(doom-org-eglot-mode 1)` call shown above.
+
 ## Usage
 
-Enable `doom-org-eglot-mode`, put point inside a source block, and press
+With the mode enabled, put point inside a source block and press
 `C-c '` as usual. For best results give the block a `:tangle` file inside your
 project:
 
